@@ -1,16 +1,29 @@
 let num1, num2;
 
-function getDailySubtractionEquation() {
+// Seeded random using date
+function getDailySeed() {
   const today = new Date();
-  const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+  return today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+}
 
-  // Generate two pseudo-random numbers
-  const raw1 = (seed % 97) + 3;        // Between 3 and 99
-  const raw2 = ((seed * 7) % 89) + 11; // Between 11 and 99
+function mulberry32(seed) {
+  return function() {
+    let t = seed += 0x6D2B79F5;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
-  // Ensure subtraction doesn't go negative
-  num1 = Math.max(raw1, raw2);
-  num2 = Math.min(raw1, raw2);
+function generateDailySubtraction() {
+  const seed = getDailySeed();
+  const rand = mulberry32(seed);
+
+  // Generate two numbers and ensure num1 ≥ num2
+  const a = Math.floor(rand() * 100);
+  const b = Math.floor(rand() * 100);
+  num1 = Math.max(a, b);
+  num2 = Math.min(a, b);
 
   document.getElementById("question").innerHTML = `<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>${num1}</mi><mo>&#x2212;</mo><mi>${num2}</mi></mrow></math>`;
 }
@@ -31,7 +44,7 @@ function checkAnswer() {
 }
 
 // Preferences
-getDailySubtractionEquation();
+generateDailySubtraction();
 
 const today = new Date();
 
