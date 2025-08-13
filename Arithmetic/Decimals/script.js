@@ -43,7 +43,7 @@ function getDailyOperator() {
 
 function checkAnswer() {
   const userAnswer = parseFloat(document.getElementById("answer").value);
-  const correctAnswer = eval((num1) + dailyOp.operator + (num2));
+  const correctAnswer = Math.round(eval((num1) + dailyOp.operator + (num2)) * 100) / 100;
   
   if(userAnswer === correctAnswer) {
     document.getElementById("answer").style.background = "#21D375";
